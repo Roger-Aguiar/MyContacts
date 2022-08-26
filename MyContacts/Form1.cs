@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MyContacts
 {
@@ -47,7 +48,6 @@ namespace MyContacts
             using (connection)
             {
                 connection.Open();
-                connection.Close();
                 
                 stringBuilder.Clear();
                 stringBuilder.Append("INSERT INTO Contacts(FullName, Nickname, PhoneNumber, Email)");
@@ -79,6 +79,43 @@ namespace MyContacts
         {
             stringConnection = databaseService.GetConnectionString();
             connection = new SqlConnection(stringConnection.ConnectionString);
+            Read();
+            LinkDataGridViewToFields();
         }
+
+        private void dataGridViewRows_SelectionChanged(object sender, EventArgs e)
+        {
+            LinkDataGridViewToFields();
+        }
+
+        #region Methods
+
+        private void LinkDataGridViewToFields()
+        {
+            if (dataGridViewRows.Rows.Count > 0)
+            {
+                textBoxName.Text = dataGridViewRows.Rows[dataGridViewRows.CurrentRow.Index].Cells[0].Value.ToString();
+                textBoxNickName.Text = dataGridViewRows.Rows[dataGridViewRows.CurrentRow.Index].Cells[1].Value.ToString();
+                maskedTextBoxPhoneNumber.Text = dataGridViewRows.Rows[dataGridViewRows.CurrentRow.Index].Cells[2].Value.ToString();
+                textBoxEmail.Text = dataGridViewRows.Rows[dataGridViewRows.CurrentRow.Index].Cells[3].Value.ToString();                
+            }
+        }
+
+        private void Read()
+        {
+            using (connection)
+            {
+                connection.Open();
+
+                stringBuilder.Clear();
+                stringBuilder.Append("SELECT FullName, Nickname, PhoneNumber, Email FROM Contacts ORDER BY FullName;");
+                sql = stringBuilder.ToString();
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "Contacts");
+                dataGridViewRows.DataSource = dataSet.Tables["Contacts"].DefaultView;
+            }
+        }
+        #endregion
     }
 }

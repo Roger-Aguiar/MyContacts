@@ -13,6 +13,8 @@ CREATE TABLE Contacts
 INSERT INTO Contacts(FullName, Nickname, PhoneNumber, Email)
 VALUES('Roger Aguiar', 'Software Developer', '(31) 98345-3069', 'rogerdaviola@yahoo.com.br');
 
-SELECT * FROM Contacts;
+SELECT FullName, Nickname, PhoneNumber, Email 
+FROM Contacts
+ORDER BY FullName;
 
 DROP TABLE Contacts;
