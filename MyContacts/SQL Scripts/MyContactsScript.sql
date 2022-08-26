@@ -17,4 +17,6 @@ SELECT FullName, Nickname, PhoneNumber, Email
 FROM Contacts
 ORDER BY FullName;
 
+SELECT * FROM Contacts;
+
 DROP TABLE Contacts;
